@@ -85,11 +85,13 @@ def logout_view(request):
 @login_required
 def dashboard(request):
     """Redirect users to their respective dashboards based on role"""
-    if request.user.role == 'admin':
+    user = request.user
+    if user.is_admin:
         return redirect('admin_dashboard')
-    elif request.user.role == 'doctor':
+    elif user.is_doctor:
         return redirect('doctor_dashboard')
     else:
+        # Fallback to client dashboard
         return redirect('client_dashboard')
 
 @login_required

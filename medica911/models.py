@@ -30,7 +30,7 @@ class User(AbstractUser):
     
     @property
     def is_admin(self):
-        return self.role == 'admin'
+        return self.role == 'admin' or self.is_superuser
     
     @property
     def is_doctor(self):
@@ -38,7 +38,8 @@ class User(AbstractUser):
     
     @property
     def is_client(self):
-        return self.role == 'client'
+        # Default to client if role is empty or explicitly 'client'
+        return self.role == 'client' or not self.role
 
 
 class Speciality(models.Model):
