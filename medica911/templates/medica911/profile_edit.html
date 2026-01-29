@@ -1,0 +1,65 @@
+{% extends 'medica911/base.html' %}
+
+{% block title %}Edit Profile - Medica{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-white p-4 border-0">
+                    <h3 class="fw-bold text-dark mb-0">Personal Information</h3>
+                    <p class="text-muted mb-0">Update your account details and contact information</p>
+                </div>
+                <div class="card-body p-4 p-md-5 pt-0">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">First Name</label>
+                                {{ form.first_name }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Last Name</label>
+                                {{ form.last_name }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Email Address</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Phone Number</label>
+                                {{ form.phone }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">City</label>
+                                {{ form.city }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Date of Birth</label>
+                                {{ form.date_of_birth }}
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label fw-bold">Address</label>
+                                {{ form.address }}
+                            </div>
+                            <div class="col-12 mb-4">
+                                <label class="form-label fw-bold">Profile Picture URL</label>
+                                {{ form.profile_picture }}
+                                <div class="form-text">Provide a link to your profile image.</div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'dashboard' %}" class="btn btn-light px-4">Cancel</a>
+                            <button type="submit" class="btn btn-primary px-5">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

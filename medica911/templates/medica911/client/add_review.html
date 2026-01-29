@@ -1,0 +1,77 @@
+{% extends 'medica911/base.html' %}
+
+{% block title %}Leave a Review - Medica{% endblock %}
+
+{% block content %}
+<section class="container py-5 my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg p-4 p-md-5">
+                <div class="text-center mb-5">
+                    <div class="bg-primary-subtle text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                        style="width: 80px; height: 80px;">
+                        <i class="fas fa-star fa-2x"></i>
+                    </div>
+                    <h2 class="fw-bold text-dark">How was your visit?</h2>
+                    <p class="text-muted">Rate your experience with
+                        <span class="fw-bold text-dark">
+                            Dr. {{ appointment.doctor.user.get_full_name }}</span>
+                    </p>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-5 text-center rating-selector">
+                        <label class="form-label d-block fw-bold mb-3">Select Rating</label>
+                        <div class="d-flex justify-content-center gap-3">
+                            {% for radio in form.rating %}
+                            <div class="rating-item">
+                                {{ radio.tag }}
+                                <label for="{{ radio.id_for_label }}"
+                                    class="btn btn-outline-warning rounded-pill px-3 py-2">
+                                    {{ radio.choice_label }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if form.rating.errors %}
+                        <div class="text-danger small mt-2">{{ form.rating.errors|first }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Share your thoughts</label>
+                        {{ form.comment }}
+                        {% if form.comment.errors %}
+                        <div class="text-danger small mt-1">{{ form.comment.errors|first }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg">Submit Review</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{% url 'client_dashboard' %}" class="text-muted text-decoration-none">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .rating-selector input[type="radio"] {
+        display: none;
+    }
+
+    .rating-selector input[type="radio"]:checked+label {
+        background-color: #ffc107;
+        color: #000;
+        border-color: #ffc107;
+        box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
+    }
+</style>
+{% endblock %}

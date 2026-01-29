@@ -1,0 +1,202 @@
+{% extends 'medica911/base.html' %}
+
+{% block title %}Dashboard - Medica{% endblock %}
+
+{% block content %}
+<section class="bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="fw-bold mb-0">Hello, {{ user.first_name }}!</h1>
+                <p class="lead opacity-75">Welcome to your patient portal</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <a href="{% url 'browse_doctors' %}" class="btn btn-light btn-lg px-4">
+                    <i class="fas fa-search me-2"></i> Book New Appointment
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="row g-4">
+        <!-- Dashboard Stats -->
+        <div class="col-md-4">
+            <div class="card p-4 border-0 shadow-sm bg-white h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary-subtle text-primary p-3 rounded-circle me-3">
+                        <i class="fas fa-calendar-alt fa-2x"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-0">Total Appointments</h6>
+                        <h2 class="fw-bold mb-0">{{ appointments.count }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Profile Quick Access -->
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">My Information</h5>
+                    <a href="{% url 'profile_edit' %}" class="btn btn-sm btn-outline-primary">Edit Profile</a>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-1 text-muted small">Full Name</p>
+                        <p class="fw-600">{{ user.get_full_name }}</p>
+                        <p class="mb-1 text-muted small">Email Address</p>
+                        <p class="fw-600">{{ user.email }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1 text-muted small">Phone Number</p>
+                        <p class="fw-600">{{ user.phone|default:"Not provided" }}</p>
+                        <p class="mb-1 text-muted small">Location</p>
+                        <p class="fw-600">{{ user.city|default:"Not provided" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointment History -->
+        <div class="col-12 mt-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="fw-bold mb-0">Appointment History</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">Doctor</th>
+                                <th>Speciality</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th class="text-end pe-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light rounded-circle p-2 me-3">
+                                            <i class="fas fa-user-md text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <p class="fw-bold mb-0">Dr. {{ appointment.doctor.user.get_full_name }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ appointment.doctor.speciality.name }}</td>
+                                <td>
+                                    <p class="mb-0">{{ appointment.appointment_date }}</p>
+                                    <small class="text-muted">{{ appointment.appointment_time }}</small>
+                                </td>
+                                <td>
+                                    <span
+                                        class="badge rounded-pill {% if appointment.status == 'confirmed' %}bg-success{% elif appointment.status == 'pending' %}bg-warning text-dark{% elif appointment.status == 'completed' %}bg-primary{% else %}bg-secondary{% endif %}">
+                                        {{ appointment.get_status_display }}
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    {% if appointment.status == 'completed' and not appointment.review %}
+                                    <a href="{% url 'add_review' appointment.id %}" class="btn btn-sm btn-primary">Leave
+                                        Review</a>
+                                    {% endif %}
+                                    <button class="btn btn-sm btn-light border" data-bs-toggle="modal"
+                                        data-bs-target="#modal-{{ appointment.id }}">Details</button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="fas fa-calendar-times fa-3x mb-3 opacity-25"></i>
+                                    <p>No appointments found. Ready to book your first one?</p>
+                                    <a href="{% url 'browse_doctors' %}" class="btn btn-primary btn-sm">Browse
+                                        Doctors</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Appointment Modals (Moved outside table to prevent z-index/glitching issues) -->
+{% for appointment in appointments %}
+<div class="modal fade" id="modal-{{ appointment.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 bg-light p-4">
+                <h5 class="modal-title fw-bold">Appointment Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-start">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary-subtle text-primary p-3 rounded-circle me-3">
+                        <i class="fas fa-user-md fa-2x"></i>
+                    </div>
+                    <div>
+                        <label class="text-muted small d-block">Doctor</label>
+                        <p class="fw-bold fs-5 mb-0">Dr. {{ appointment.doctor.user.get_full_name }}</p>
+                        <span class="badge bg-primary-subtle text-primary">
+                            {{ appointment.doctor.speciality.name }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded-3">
+                            <label class="text-muted small d-block mb-1"><i class="far fa-calendar-alt me-1"></i>
+                                Date</label>
+                            <p class="fw-bold mb-0">{{ appointment.appointment_date }}</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 bg-light rounded-3">
+                            <label class="text-muted small d-block mb-1"><i class="far fa-clock me-1"></i> Time</label>
+                            <p class="fw-bold mb-0">{{ appointment.appointment_time }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="text-muted small d-block mb-2">Reason for Visit</label>
+                    <div class="p-3 border rounded-3 bg-white">
+                        <p class="mb-0">{{ appointment.reason|default:"No reason provided" }}</p>
+                    </div>
+                </div>
+
+                {% if appointment.diagnosis or appointment.prescription %}
+                <div class="mt-4 p-4 bg-primary-subtle rounded-4">
+                    <div class="mb-3">
+                        <label class="text-muted fw-bold small d-block text-uppercase mb-1">Medical Diagnosis</label>
+                        <p class="mb-0 fw-600 text-dark">{{ appointment.diagnosis|default:"Evaluation pending" }}</p>
+                    </div>
+                    <div>
+                        <label class="text-muted fw-bold small d-block text-uppercase mb-1">Prescription</label>
+                        <p class="mb-0 text-primary fw-bold fs-5">{{ appointment.prescription|default:"No medication
+                            prescribed" }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer border-0 p-4">
+                <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Close</button>
+                {% if appointment.status == 'completed' and not appointment.review %}
+                <a href="{% url 'add_review' appointment.id %}" class="btn btn-primary px-4">Leave Review</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

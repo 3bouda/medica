@@ -1,0 +1,101 @@
+{% extends 'medica911/base.html' %}
+
+{% block title %}Consultation - Medica{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Consultation</li>
+                    </ol>
+                </nav>
+                <span class="badge bg-primary px-3 py-2">Appointment #{{ appointment.id }}</span>
+            </div>
+
+            <div class="row g-4">
+                <!-- Patient Info -->
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4 text-center">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                                style="width: 80px; height: 80px; font-size: 2rem;">
+                                {{ appointment.client.first_name|first }}{{ appointment.client.last_name|first }}
+                            </div>
+                            <h4 class="fw-bold mb-1">{{ appointment.client.get_full_name }}</h4>
+                            <p class="text-muted small mb-4">Patient Profile</p>
+
+                            <hr>
+
+                            <div class="text-start">
+                                <div class="mb-3">
+                                    <label class="text-muted small d-block">Contact</label>
+                                    <p class="fw-bold mb-0">{{ appointment.client.phone|default:"No phone" }}</p>
+                                    <p class="mb-0">{{ appointment.client.email }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="text-muted small d-block">Age / DOB</label>
+                                    <p class="fw-bold mb-0">{{ appointment.client.date_of_birth|default:"Not provided"
+                                        }}</p>
+                                </div>
+                                <div class="mb-0">
+                                    <label class="text-muted small d-block">Reason for consultation</label>
+                                    <div class="p-3 bg-light rounded mt-2">
+                                        {{ appointment.reason }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Consultation Form -->
+                <div class="col-md-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white p-4 border-0">
+                            <h5 class="fw-bold mb-0">Medical Record & Diagnosis</h5>
+                        </div>
+                        <div class="card-body p-4 pt-0">
+                            <form method="POST">
+                                {% csrf_token %}
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Appointment Status</label>
+                                    {{ form.status }}
+                                    <div class="form-text">Update status to 'Completed' after finishing the session.
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Doctor Notes (Private)</label>
+                                    {{ form.notes }}
+                                    <div class="form-text">Internal notes for future reference.</div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Diagnosis</label>
+                                    {{ form.diagnosis }}
+                                    <div class="form-text">Visible to the patient.</div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Prescription</label>
+                                    {{ form.prescription }}
+                                    <div class="form-text">Medications and dosages if applicable.</div>
+                                </div>
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a href="{% url 'dashboard' %}" class="btn btn-light px-4">Discard</a>
+                                    <button type="submit" class="btn btn-primary px-5">Save Consultation</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

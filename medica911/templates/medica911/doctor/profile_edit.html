@@ -1,0 +1,83 @@
+{% extends 'medica911/base.html' %}
+
+{% block title %}Medical Profile - Medica{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-dark text-white p-4 border-0">
+                    <h3 class="fw-bold mb-0">Medical Practice Details</h3>
+                    <p class="opacity-75 mb-0">Configure your speciality, clinic info, and availability</p>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold">Medical Speciality</label>
+                                {{ form.speciality }}
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold">License Number</label>
+                                {{ form.license_number }}
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold">Years of Experience</label>
+                                {{ form.experience_years }}
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold">Consultation Fee ($)</label>
+                                {{ form.consultation_fee }}
+                            </div>
+
+                            <div class="col-12 mb-4">
+                                <label class="form-label fw-bold">Professional Biography</label>
+                                {{ form.bio }}
+                                <div class="form-text">Tell your patients about your background and expertise.</div>
+                            </div>
+
+                            <div class="col-12 mb-4">
+                                <label class="form-label fw-bold">Education & Credentials</label>
+                                {{ form.education }}
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold">Clinic Name</label>
+                                {{ form.clinic_name }}
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold">Clinic Address</label>
+                                {{ form.clinic_address }}
+                            </div>
+
+                            <div class="col-12 mb-4">
+                                <div
+                                    class="form-check form-switch p-3 bg-light rounded border d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <label class="form-check-label fw-bold" for="id_is_available">Available for
+                                            Bookings</label>
+                                        <div class="small text-muted">Disable this to temporarily hide your profile from
+                                            search.</div>
+                                    </div>
+                                    <div class="ps-5">
+                                        {{ form.is_available }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'dashboard' %}" class="btn btn-light px-4">Back to Dashboard</a>
+                            <button type="submit" class="btn btn-dark px-5">Update Medical Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

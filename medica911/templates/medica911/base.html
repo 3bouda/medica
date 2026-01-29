@@ -1,0 +1,330 @@
+{% load static socialaccount %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Medica - Your Healthcare Partner{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --success-color: #4cc9f0;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --text-dark: #212529;
+            --text-muted: #6c757d;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-color) !important;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            padding: 100px 0;
+            margin-bottom: 50px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--white);
+            padding: 50px 0 20px;
+            margin-top: 100px;
+            border-top: 1px solid #eee;
+        }
+
+        /* Utility Classes */
+        .glass-effect {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .section-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        /* Stats Cards */
+        .stat-card {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+            {
+            % block extra_css %
+        }
+
+            {
+            % endblock %
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <i class="fas fa-hand-holding-medical"></i> Medica
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'browse_doctors' %}">Browse Doctors</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i> {{ user.get_full_name|default:user.email }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                            <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="{% url 'profile_edit' %}">Profile Settings</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-primary" href="{% url 'signup' %}">Sign Up</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        {% if messages %}
+        <div class="container mt-4">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-hand-holding-medical"></i> Medica</h5>
+                    <p class="text-muted">Connecting you with the best medical care. Book appointments easily and manage
+                        your health journey.</p>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-3">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'index' %}" class="text-muted text-decoration-none">Home</a></li>
+                        <li><a href="{% url 'browse_doctors' %}" class="text-muted text-decoration-none">Doctors</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold mb-3">Contact Use</h6>
+                    <ul class="list-unstyled text-muted">
+                        <li><i class="fas fa-phone-alt me-2"></i> +216 55 423 394</li>
+                        <li><i class="fas fa-envelope me-2"></i> contact@medica.com</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i> Tunis , Tunisia </li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold mb-3">Follow Us</h6>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-primary fs-5"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-info fs-5"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-danger fs-5"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-primary fs-5"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center text-muted py-3">
+                <small>&copy; 2026 Medica. All rights reserved.</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Authentication Popup Sync -->
+    <script>
+        function openGoogleLogin(url) {
+            const width = 500;
+            const height = 600;
+            const left = (window.innerWidth - width) / 2;
+            const top = (window.innerHeight - height) / 2;
+            window.open(url, "googleLogin", `width=${width},height=${height},left=${left},top=${top}`);
+        }
+
+        // Detect successful login in the popup and sync with parent
+        (function () {
+            const SYNC_KEY = 'medica_auth_sync';
+
+            {% if user.is_authenticated %}
+            // When we log in (even in popup), notify other tabs
+            localStorage.setItem(SYNC_KEY, 'logged_in_' + Date.now());
+
+            // If we are in the popup, close it
+            if (window.opener && window.opener !== window) {
+                try {
+                    if (!window.opener.closed) {
+                        window.opener.location.href = "{% url 'dashboard' %}";
+                        window.close();
+                    }
+                } catch (e) {
+                    window.close();
+                }
+            }
+            {% else %}
+            // Handle logout sync if needed
+            {% endif %}
+
+            window.addEventListener('storage', function (e) {
+                if (e.key === SYNC_KEY && e.newValue.startsWith('logged_in')) {
+                    // Refresh only if we are on a page that needs it (login/signup/home)
+                    if (window.location.pathname.includes('login') || window.location.pathname.includes('signup') || window.location.pathname === '/') {
+                        window.location.href = "{% url 'dashboard' %}";
+                    }
+                }
+            });
+        })();
+    </script>
+
+    {% block extra_js %}{% endblock %}
+
+</body>
+
+</html>

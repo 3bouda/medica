@@ -1,0 +1,141 @@
+{% extends 'medica911/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-3 fw-bold text-dark mb-4">Your Health, <span class="text-primary">Our Priority</span></h1>
+        <p class="lead text-muted mb-5 mx-auto" style="max-width: 700px;">
+            Book appointments with the best doctors in your area. Quick, secure, and hassle-free medical care at your
+            fingertips.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'browse_doctors' %}" class="btn btn-primary btn-lg px-5">Find a Doctor</a>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'signup' %}?role=doctor" class="btn btn-outline-primary btn-lg px-5">Join as Doctor</a>
+
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="container mt-n5 mb-5">
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-3">
+            <div class="card stat-card shadow">
+                <div class="stat-icon"><i class="fas fa-user-md"></i></div>
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Specialist Doctors</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card shadow">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-number">10k+</div>
+                <div class="stat-label">Happy Patients</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card shadow">
+                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="stat-number">50k+</div>
+                <div class="stat-label">Appointments</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Specialities Section -->
+<section class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="section-title mx-auto text-center" style="display: inline-block;">Browse by Speciality</h2>
+    </div>
+    <div class="row g-4">
+        {% for speciality in specialities %}
+        <div class="col-md-4 col-lg-2">
+            <a href="{% url 'browse_doctors' %}?speciality={{ speciality.id }}" class="text-decoration-none">
+                <div class="card text-center h-100 p-4">
+                    <div class="fs-1 text-primary mb-3">
+                        <i class="fas {{ speciality.icon }}"></i>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-0">{{ speciality.name }}</h6>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted">
+            <p>No specialities added yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Featured Doctors Section -->
+<section class="container py-5">
+    <div class="d-flex justify-content-between align-items-end mb-5">
+        <div>
+            <h2 class="section-title">Featured Doctors</h2>
+            <p class="text-muted">Top rated medical professionals ready to help you.</p>
+        </div>
+        <a href="{% url 'browse_doctors' %}" class="btn btn-link text-primary fw-bold text-decoration-none">
+            View All Doctors <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+    </div>
+    <div class="row g-4">
+        {% for doctor in top_doctors %}
+        <div class="col-md-3">
+            <div class="card h-100 overflow-hidden">
+                <div class="position-relative">
+                    {% if doctor.user.profile_picture %}
+                    <img src="{{ doctor.user.profile_picture }}" class="card-img-top"
+                        alt="{{ doctor.user.get_full_name }}" style="height: 250px; object-fit: cover;">
+                    {% else %}
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
+                        <i class="fas fa-user-md fa-5x text-secondary opacity-25"></i>
+                    </div>
+                    {% endif %}
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <span class="badge bg-white text-primary shadow-sm rounded-pill px-3 py-2">
+                            <i class="fas fa-star text-warning me-1"></i> {{ doctor.rating }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <span class="badge bg-primary-subtle text-primary mb-2 px-3">{{ doctor.speciality.name }}</span>
+                    <h5 class="card-title fw-bold">Dr. {{ doctor.user.get_full_name }}</h5>
+                    <p class="text-muted small mb-3">
+                        <i class="fas fa-map-marker-alt me-1"></i> {{ doctor.user.city|default:"Unknown City" }}
+                    </p>
+                    <div class="d-grid">
+                        <a href="{% url 'book_appointment' doctor.id %}" class="btn btn-primary">Book Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted">
+            <p>No doctors found.</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="container py-5 mt-5">
+    <div class="card bg-primary text-white p-5 border-0 shadow-lg text-center overflow-hidden position-relative">
+        <div class="position-absolute opacity-10" style="bottom: -50px; left: -50px; font-size: 300px;">
+            <i class="fas fa-stethoscope"></i>
+        </div>
+        <div class="position-relative z-1">
+            <h2 class="fw-bold mb-4">Are You a Doctor?</h2>
+            <p class="lead mb-4 mx-auto" style="max-width: 600px;">
+                Join our network of elite medical professionals and grow your practice by reaching more patients.
+            </p>
+            <a href="{% url 'signup' %}?role=doctor" class="btn btn-light btn-lg px-5 fw-bold text-primary">Register
+                Your Clinic</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

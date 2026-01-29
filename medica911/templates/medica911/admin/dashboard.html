@@ -1,0 +1,117 @@
+{% extends 'medica911/base.html' %}
+
+{% block title %}Admin Dashboard - Medica{% endblock %}
+
+{% block content %}
+<section class="bg-primary text-white py-5 mb-5 shadow-sm">
+    <div class="container">
+        <h1 class="fw-bold mb-0">System Administration</h1>
+        <p class="lead opacity-75">Control center for Medica platform</p>
+    </div>
+</section>
+
+<section class="container mb-5">
+    <div class="row g-4">
+        <!-- Stats Cards -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-4 h-100 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="bg-primary-subtle text-primary p-3 rounded-3">
+                        <i class="fas fa-user-md fa-2x"></i>
+                    </div>
+                    <a href="{% url 'manage_users' 'doctor' %}"
+                        class="btn btn-sm btn-link text-decoration-none">View</a>
+                </div>
+                <h6 class="text-muted small text-uppercase fw-bold mb-1">Total Doctors</h6>
+                <h2 class="fw-bold mb-0">{{ total_doctors }}</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-4 h-100 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="bg-success-subtle text-success p-3 rounded-3"
+                        style="background-color: #d1e7dd; color: #0f5132;">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                    <a href="{% url 'manage_users' 'client' %}"
+                        class="btn btn-sm btn-link text-decoration-none">View</a>
+                </div>
+                <h6 class="text-muted small text-uppercase fw-bold mb-1">Total Clients</h6>
+                <h2 class="fw-bold mb-0 text-success">{{ total_clients }}</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-4 h-100 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="bg-info-subtle text-info p-3 rounded-3"
+                        style="background-color: #cff4fc; color: #055160;">
+                        <i class="fas fa-calendar-check fa-2x"></i>
+                    </div>
+                    <span class="badge bg-info text-dark rounded-pill">All Time</span>
+                </div>
+                <h6 class="text-muted small text-uppercase fw-bold mb-1">Appointments</h6>
+                <h2 class="fw-bold mb-0 text-info">{{ total_appointments }}</h2>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-4 h-100 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="bg-warning-subtle text-warning p-3 rounded-3"
+                        style="background-color: #fff3cd; color: #664d03;">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                    {% if pending_appointments > 0 %}
+                    <span class="badge bg-danger rounded-pill">Action Required</span>
+                    {% endif %}
+                </div>
+                <h6 class="text-muted small text-uppercase fw-bold mb-1">New this week</h6>
+                <h2 class="fw-bold mb-0 text-warning">{{ recent_appointments }}</h2>
+            </div>
+        </div>
+
+        <!-- System Table -->
+        <div class="col-12 mt-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-4 px-4 border-0">
+                    <h5 class="fw-bold mb-0">Recent Platform Activity</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">Patient</th>
+                                <th>Doctor</th>
+                                <th>Speciality</th>
+                                <th>DateTime</th>
+                                <th>Status</th>
+                                <th class="text-end pe-4">System ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in latest_appointments %}
+                            <tr>
+                                <td class="ps-4 fw-bold">{{ app.client.get_full_name }}</td>
+                                <td>Dr. {{ app.doctor.user.get_full_name }}</td>
+                                <td>{{ app.doctor.speciality.name }}</td>
+                                <td>{{ app.appointment_date }} @ {{ app.appointment_time }}</td>
+                                <td>
+                                    <span
+                                        class="badge rounded-pill {% if app.status == 'confirmed' %}bg-success{% elif app.status == 'pending' %}bg-warning text-dark{% elif app.status == 'completed' %}bg-primary{% else %}bg-secondary{% endif %}">
+                                        {{ app.get_status_display }}
+                                    </span>
+                                </td>
+                                <td class="text-end pe-4 text-muted small">#{{ app.id|stringformat:"05d" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4">No recent activity detected.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
