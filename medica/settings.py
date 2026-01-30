@@ -153,13 +153,12 @@ LOGOUT_REDIRECT_URL = 'index'
 
 # Allauth Core Settings
 ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'none' # Development
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_SIGNUP_REDIRECT_URL = 'dashboard'
-ACCOUNT_LOGIN_METHODS = {'email'}
+
 
 # Social Account Settings
 SOCIALACCOUNT_ADAPTER = 'medica911.adapters.MySocialAccountAdapter'
